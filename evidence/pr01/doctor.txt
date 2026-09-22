@@ -1,0 +1,164 @@
+/opt/ros/lyrical/lib/python3.14/site-packages/ros2doctor/api/__init__.py: 259: UserWarning: Fail to call PackageReport class functions.
+/opt/ros/lyrical/lib/python3.14/site-packages/ros2doctor/api/__init__.py: 259: UserWarning: Fail to call RosdistroReport class functions.
+
+   ACTION LIST
+action                 : /turtle1/rotate_absolute
+action server count    : 1
+action client count    : 1
+
+   ROS ENVIRONMENT
+ROS environment variables        : ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET, ROS_DISTRO=lyrical, ROS_DOMAIN_ID=16
+rcutils environment variables    : 
+rmw environment variables        : 
+
+   NETWORK CONFIGURATION
+inet         : 127.0.0.1
+inet4        : ['127.0.0.1']
+inet6        : ['::1']
+netmask      : 255.0.0.0
+device       : lo
+flags        : UP,LOOPBACK,RUNNING
+mtu          : 65536
+inet         : 172.17.0.2
+inet4        : ['172.17.0.2']
+ether        : 0e:cb:2f:32:b2:35
+inet6        : ['2001:db8:1::2', 'fe80::ccb:2fff:fe32:b235%eth0']
+netmask      : 255.255.0.0
+device       : eth0
+flags        : UP,BROADCAST,RUNNING,MULTICAST
+mtu          : 1500
+broadcast    : 172.17.255.255
+
+   PLATFORM INFORMATION
+system           : Linux
+platform info    : Linux-6.8.0-139-generic-x86_64-with-glibc2.43
+release          : 6.8.0-139-generic
+processor        : 
+
+   QOS COMPATIBILITY LIST
+topic [type]            : /parameter_events [rcl_interfaces/msg/ParameterEvent]
+publisher node          : teleop_turtle
+subscriber node         : turtlesim
+compatibility status    : OK
+topic [type]            : /parameter_events [rcl_interfaces/msg/ParameterEvent]
+publisher node          : _ros2cli_daemon_16_4931bec5e4bf4ed2a16a77e509f01863
+subscriber node         : turtlesim
+compatibility status    : OK
+topic [type]            : /parameter_events [rcl_interfaces/msg/ParameterEvent]
+publisher node          : turtlesim
+subscriber node         : turtlesim
+compatibility status    : OK
+topic [type]            : /turtle1/cmd_vel [geometry_msgs/msg/Twist]
+publisher node          : teleop_turtle
+subscriber node         : turtlesim
+compatibility status    : OK
+topic [type]            : /turtle1/rotate_absolute/_action/feedback [turtlesim_msgs/action/RotateAbsolute_FeedbackMessage]
+publisher node          : turtlesim
+subscriber node         : teleop_turtle
+compatibility status    : OK
+topic [type]            : /turtle1/rotate_absolute/_action/status [action_msgs/msg/GoalStatusArray]
+publisher node          : turtlesim
+subscriber node         : teleop_turtle
+compatibility status    : OK
+
+   RMW MIDDLEWARE
+middleware name    : rmw_fastrtps_cpp
+
+   SERVICE LIST
+service          : /clear
+service count    : 1
+client count     : 0
+service          : /kill
+service count    : 1
+client count     : 0
+service          : /reset
+service count    : 1
+client count     : 0
+service          : /spawn
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/describe_parameters
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/get_parameter_types
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/get_parameters
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/get_type_description
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/list_parameters
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/set_parameters
+service count    : 1
+client count     : 0
+service          : /teleop_turtle/set_parameters_atomically
+service count    : 1
+client count     : 0
+service          : /turtle1/rotate_absolute/_action/cancel_goal
+service count    : 1
+client count     : 1
+service          : /turtle1/rotate_absolute/_action/get_result
+service count    : 1
+client count     : 1
+service          : /turtle1/rotate_absolute/_action/send_goal
+service count    : 1
+client count     : 1
+service          : /turtle1/set_pen
+service count    : 1
+client count     : 0
+service          : /turtle1/teleport_absolute
+service count    : 1
+client count     : 0
+service          : /turtle1/teleport_relative
+service count    : 1
+client count     : 0
+service          : /turtlesim/describe_parameters
+service count    : 1
+client count     : 0
+service          : /turtlesim/get_parameter_types
+service count    : 1
+client count     : 0
+service          : /turtlesim/get_parameters
+service count    : 1
+client count     : 0
+service          : /turtlesim/get_type_description
+service count    : 1
+client count     : 0
+service          : /turtlesim/list_parameters
+service count    : 1
+client count     : 0
+service          : /turtlesim/set_parameters
+service count    : 1
+client count     : 0
+service          : /turtlesim/set_parameters_atomically
+service count    : 1
+client count     : 0
+
+   TOPIC LIST
+topic               : /turtle1/cmd_vel
+publisher count     : 1
+subscriber count    : 1
+topic               : /turtle1/color_sensor
+publisher count     : 1
+subscriber count    : 0
+topic               : /turtle1/pose
+publisher count     : 1
+subscriber count    : 0
+topic               : /turtle1/rotate_absolute/_action/feedback
+publisher count     : 1
+subscriber count    : 1
+topic               : /turtle1/rotate_absolute/_action/status
+publisher count     : 1
+subscriber count    : 1
+
+================================================================================
+                                !!! WARNING !!!                                 
+================================================================================
+The report includes all ROS 2 endpoint information and system platform information.
+Please review the report before sharing, as it may contain sensitive or private data.
+================================================================================
+

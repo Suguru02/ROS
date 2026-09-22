@@ -1,0 +1,3 @@
+- name: Validate environment JSON
+  shell: bash
+  run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
