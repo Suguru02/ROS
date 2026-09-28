@@ -1,0 +1,5 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-09-25-06-35-11-817212-pr01-demo-887
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [turtlesim_node-1]: process started with pid [902]
+[turtlesim_node-1] [INFO] [1790318111.931618976] [turtlesim]: Starting turtlesim with node name /turtlesim
+[turtlesim_node-1] [INFO] [1790318111.939646002] [turtlesim]: Spawning turtle [turtle1] at x=[5.544445], y=[5.544445], theta=[0.000000]

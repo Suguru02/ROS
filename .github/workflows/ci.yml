@@ -1,3 +1,31 @@
-- name: Validate environment JSON
-  shell: bash
-  run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
+name: ROS checks
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: osrf/ros:jazzy-desktop-full@sha256:d16957210572c5f919f3f9bd2fb0cc24a82542647489d8b8eda7c3beda31305f
+    steps:
+      # Shell выполняется без Node; JavaScript actions требуют его заранее.
+      - name: Prepare Node for checkout (GitVerse, linux-x64)
+        shell: bash
+        run: |
+          test "$(uname -m)" = x86_64
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl xz-utils
+          curl -fsSLo /tmp/node.tar.xz https://nodejs.org/dist/v22.19.0/node-v22.19.0-linux-x64.tar.xz
+          printf '%s  %s\n' c0649af18e6a24f6fe5535a3e86b341dd49a8e71117c8b68bde973ef834f16f2 /tmp/node.tar.xz | sha256sum -c -
+          tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1
+          node --version
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build and test
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon build --symlink-install
+          colcon test --event-handlers console_direct+
+          colcon test-result --verbose

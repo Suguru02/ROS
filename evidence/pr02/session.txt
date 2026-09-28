@@ -1,0 +1,34 @@
+    1  source /opt/ros/lyrical/setup.bash
+    2  export ROS_DOMAIN_ID=46
+    3  ros2 node list --no-daemon --spin-time 2
+    4  ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist   '{linear: {x: 1.0}, angular: {z: 0.5}}'
+    5  ros2 topic echo /turtle1/pose --once
+    6  ros2 topic pub --rate 1 --wait-matching-subscriptions 0   /cmd_vel geometry_msgs/msg/Twist   '{linear: {x: 1.0}, angular: {z: 0.5}}'
+    7  ros2 topic pub --rate 1 --wait-matching-subscriptions 0   /cmd_vel geometry_msgs/msg/Twist   '{linear: {x: 1.0}, angular: {z: 0.5}}'
+    8  source /work/install/setup.bash
+    9  ros2 node list --no-daemon --spin-time 2 > /work/evidence/pr02/nodes-restarted.txt
+   10  ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'
+   11  sleep 1
+   12  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-working.txt
+   13  ros2 node list --no-daemon --spin-time 2 > /work/evidence/pr02/nodes-restarted.txt
+   14  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-before.txt
+   15  ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0},
+   16  ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'
+   17  sleep 1
+   18  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-working.txt
+   19  ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}' > /dev/null 2>&1 &
+   20  sleep 2
+   21  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-broken.txt
+   22  ros2 topic info /cmd_vel --verbose > /work/evidence/pr02/topic-broken.txt
+   23  cp /work/evidence/pr02/topic-broken.txt /work/evidence/pr02/topic-target-before-fix.txt
+   24  kill %1
+   25  ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}' > /dev/null 2>&1 &
+   26  sleep 2
+   27  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-fixed.txt
+   28  ros2 topic info /turtle1/cmd_vel --verbose > /work/evidence/pr02/topic-fixed.txt
+   29  kill %1
+   30  sleep 1
+   31  ros2 topic echo /turtle1/pose --once > /work/evidence/pr02/pose-resting.txt
+   32  # nodes-final.txt
+   33  ros2 node list --no-daemon --spin-time 2 > /work/evidence/pr02/nodes-final.txt
+   34  history > /work/evidence/pr02/session.txt
