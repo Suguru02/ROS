@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR03",
+  "commit": "fe9056ba18184bcf90585e781828dfeff3294d79",
+  "course_kit": {
+    "version": "v1-w05",
+    "archive_sha256": "7bba5044875795ccf777fd2f230e7f51f840c5323d5830b62e2b15dd5561019d"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-select patrol",
+    "source install/setup.bash",
+    "python3 -m pytest src/patrol/test -q",
+    "ros2 launch turtle_bringup sim.launch.py",
+    "ros2 run patrol patrol",
+    "ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel",
+    "timeout 12s ros2 topic hz /turtle1/cmd_vel"
+  ],
+  "tests": [
+    {"name": "test_copyright", "status": "skipped"},
+    {"name": "test_flake8", "status": "passed"},
+    {"name": "test_pep257", "status": "passed"},
+    {"name": "test_xmllint", "status": "passed"},
+    {"name": "test_missing_pose_returns_zero", "status": "passed"},
+    {"name": "test_normal_pose_returns_command", "status": "passed"},
+    {"name": "test_command_within_limits", "status": "passed"}
+  ],
+  "defect": {
+    "reproducer": "ros2 run patrol patrol (без remap). Черепаха не двигается, ros2 topic info /cmd_vel показывает 1 издателя и 0 подписчиков.",
+    "root_cause": "Нода публикует в относительный топик 'cmd_vel', который разрешается в '/cmd_vel'. Симулятор turtlesim подписан на '/turtle1/cmd_vel'. Имена топиков не совпадают, связь в графе отсутствует.",
+    "proof_after": "ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel. ros2 topic info /turtle1/cmd_vel показывает 1 издателя и 1 подписчика, черепаха движется, частота ~10 Гц."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 4
+  },
+  "ai_used": true
+}
