@@ -1,42 +1,60 @@
-name: ROS checks
+name: PR03 patrol and evidence
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'src/patrol/**'
+      - 'evidence/pr03/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'src/patrol/**'
+      - 'evidence/pr03/**'
+      - '.github/workflows/ci.yml'
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     container:
-      image: osrf/ros:jazzy-desktop-full@sha256:d16957210572c5f919f3f9bd2fb0cc24a82542647489d8b8eda7c3beda31305f
+      image: osrf/ros:lyrical-desktop-full@sha256:e6b1cb530b65588279681db53784e264ce5cf83f2cc33e689d27d6024d7f3ebe
+    env:
+      COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w05-bca214e3de6f.tar.gz
+      COURSE_KIT_SHA256: bca214e3de6f90f9513049dfa0f36fee65ad834da502dc3f3f8fb443517b5197
     steps:
-      # 1. Подготовка Node.js для работы actions/checkout@v4 (как требуется в задании)
       - name: Prepare Node for checkout
         shell: bash
         run: |
-          test "$(uname -m)" = x86_64
           apt-get update
-          apt-get install -y --no-install-recommends ca-certificates curl xz-utils
-          curl -fsSLo /tmp/node.tar.xz https://nodejs.org/dist/v22.19.0/node-v22.19.0-linux-x64.tar.xz
-          printf '%s  %s\n' c0649af18e6a24f6fe5535a3e86b341dd49a8e71117c8b68bde973ef834f16f2 /tmp/node.tar.xz | sha256sum -c -
-          tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1
+          apt-get install -y --no-install-recommends nodejs ca-certificates curl
           node --version
-
-      # 2. Скачивание твоего кода
+          
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      # 3. ДОБАВЛЕНО: Установка недостающего пакета для тестов mypy
-      - name: Install missing test dependencies
+          
+      - name: Build and test patrol
         shell: bash
         run: |
-          apt-get update
-          apt-get install -y ros-jazzy-ament-mypy
-
-      # 4. Сборка и тестирование
-      - name: Build and test
-        shell: bash
-        run: |
-          source /opt/ros/jazzy/setup.bash
-          colcon build --symlink-install
-          colcon test --event-handlers console_direct+
+          source /opt/ros/lyrical/setup.bash
+          colcon build --symlink-install --packages-select turtle_bringup patrol
+          source install/setup.bash
+          ros2 pkg prefix patrol
+          python3 -m py_compile src/patrol/patrol/control.py src/patrol/patrol/patrol.py
+          (cd src/patrol && python3 -m pytest test -q)
+          colcon test --packages-select patrol --event-handlers console_direct+
           colcon test-result --verbose
+          
+      - name: Download pinned course kit
+        shell: bash
+        run: |
+          curl -fsSLo course-kit.tar.gz "$COURSE_KIT_URL"
+          printf '%s  %s\n' "$COURSE_KIT_SHA256" course-kit.tar.gz | sha256sum -c -
+          mkdir -p .course-kit
+          tar -xzf course-kit.tar.gz -C .course-kit
+          
+      - name: Validate evidence
+        shell: bash
+        run: |
+          python3 -m json.tool evidence/pr03/report.json >/dev/null
+          python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
