@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR04",
+  "commit": "978bd288a315d08f81bc72ac1b2eb968df7839e0",
+  "course_kit": {
+    "version": "v1-w05",
+    "archive_sha256": "bca214e3de6f90f9513049dfa0f36fee65ad834da502dc3f3f8fb443517b5197"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash",
+    "colcon build --symlink-install --packages-select patrol",
+    "source install/setup.bash",
+    "python3 -m pytest src/patrol/test -q 2>&1 | tee evidence/pr04/tests.txt",
+    "ros2 launch turtle_bringup sim.launch.py",
+    "ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel",
+    "ros2 param get /patrol publish_hz",
+    "ros2 param set /patrol publish_hz 5.0",
+    "timeout 5 ros2 topic hz /turtle1/cmd_vel",
+    "ros2 param set /patrol publish_hz 0.0",
+    "ros2 service call /clear std_srvs/srv/Empty",
+    "ros2 action list -t"
+  ],
+  "tests": [
+    {"name": "test_copyright", "status": "skipped"},
+    {"name": "test_flake8", "status": "passed"},
+    {"name": "test_pep257", "status": "passed"},
+    {"name": "test_xmllint", "status": "passed"},
+    {"name": "test_missing_pose_returns_zero", "status": "passed"},
+    {"name": "test_normal_pose_returns_command", "status": "passed"},
+    {"name": "test_custom_parameters", "status": "passed"},
+    {"name": "test_clamp_linear_speed", "status": "passed"},
+    {"name": "test_clamp_turn_rate", "status": "passed"},
+    {"name": "test_validate_publish_hz_valid", "status": "passed"},
+    {"name": "test_validate_publish_hz_zero", "status": "passed"},
+    {"name": "test_validate_publish_hz_negative", "status": "passed"},
+    {"name": "test_validate_publish_hz_nan", "status": "passed"},
+    {"name": "test_validate_publish_hz_inf", "status": "passed"},
+    {"name": "test_validate_publish_hz_above_max", "status": "passed"},
+    {"name": "test_validate_linear_speed_valid", "status": "passed"},
+    {"name": "test_validate_linear_speed_invalid", "status": "passed"},
+    {"name": "test_validate_turn_rate_valid", "status": "passed"},
+    {"name": "test_validate_turn_rate_invalid", "status": "passed"}
+  ],
+  "defect": {
+    "reproducer": "При временно отключённой валидации частоты в коде (строка 'if not validate_publish_hz(param.value):' заменена на 'if False:'): ros2 param set /patrol publish_hz 0.0 — нода погибает с ZeroDivisionError: division by zero на create_timer(1.0 / new_hz), процесс завершается с кодом 1 (defect-crash.txt, defect-param-set.txt)",
+    "root_cause": "Без проверки входа значение 0.0 доходит до пересоздания таймера: период 1.0 / 0.0 — деление на ноль. Проверка диапазона [1.0, 30.0] и конечности значения должна выполняться ДО изменения активного состояния",
+    "proof_after": "После возврата валидации: ros2 param set /patrol publish_hz 0.0 — Setting parameter failed; ros2 param get возвращает прежнее значение 5.0; поток команд остаётся ≈5 Гц; нода жива (proof-reject-0-restored.txt, proof-hz-5-restored.txt)"
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 3
+  },
+  "ai_used": true
+}
