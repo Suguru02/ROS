@@ -1,0 +1,36 @@
+[INFO] [1791651523.703549591] [patrol]: Таймер пересоздан: 10.0 Гц -> 5.0 Гц
+[ERROR] [1791651573.637960059] [patrol]: publish_hz=0.0 вне диапазона [1.0, 30.0] или не является конечным числом
+[ERROR] [1791651591.469623658] [patrol]: publish_hz=-2.0 вне диапазона [1.0, 30.0] или не является конечным числом
+[ERROR] [1791651600.866705135] [patrol]: linear_speed=2.0 вне диапазона [0.0, 1.0] или не является конечным числом
+[ros2run]: Received signal:  Terminated
+Traceback (most recent call last):
+  File "/work/install/patrol/lib/patrol/patrol", line 33, in <module>
+    sys.exit(load_entry_point('patrol', 'console_scripts', 'patrol')())
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/work/build/patrol/patrol/patrol.py", line 103, in main
+    rclpy.spin(node)
+    ~~~~~~~~~~^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+    executor.spin_once()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1020, in spin_once
+    self._spin_once_impl(timeout_sec)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1012, in _spin_once_impl
+    raise exception
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/task.py", line 343, in _execute_coroutine_step
+    result = coro.send(None)
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 670, in handler
+    await call_coroutine()
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 522, in _execute
+    await await_or_execute(tmr.callback)
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 139, in await_or_execute
+    return callback(*args)
+  File "/work/build/patrol/patrol/patrol.py", line 47, in on_timer
+    self.command_publisher.publish(command)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/publisher.py", line 67, in publish
+    self.__publisher.publish(msg)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+rclpy._rclpy_pybind11.RCLError: Failed to publish: publisher's context is invalid, at ./src/rcl/publisher.c:427
+[ros2run]: Process exited with failure 1

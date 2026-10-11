@@ -1,0 +1,1 @@
+Setting parameter failed: linear_speed=2.0 вне диапазона [0.0, 1.0] или не является конечным числом

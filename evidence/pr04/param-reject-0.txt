@@ -1,0 +1,2 @@
+Setting parameter failed: publish_hz=0.0 вне диапазона [1.0, 30.0] или не является конечным числом
+Double value is: 5.0
