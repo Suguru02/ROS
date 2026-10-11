@@ -1,16 +1,16 @@
-name: PR03 patrol and evidence
+name: PR04 patrol and evidence
 
 on:
   push:
     paths:
       - 'src/patrol/**'
-      - 'evidence/pr03/**'
-      - '.github/workflows/ci.yml'
+      - 'evidence/pr04/**'
+      - '.github/workflows/pr04.yml'
   pull_request:
     paths:
       - 'src/patrol/**'
-      - 'evidence/pr03/**'
-      - '.github/workflows/ci.yml'
+      - 'evidence/pr04/**'
+      - '.github/workflows/pr04.yml'
 
 jobs:
   check:
@@ -56,5 +56,5 @@ jobs:
       - name: Validate evidence
         shell: bash
         run: |
-          python3 -m json.tool evidence/pr03/report.json >/dev/null
-          python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
+          python3 -m json.tool evidence/pr04/report.json >/dev/null
+          python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
