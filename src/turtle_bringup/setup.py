@@ -28,6 +28,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'pose_relay = turtle_bringup.pose_relay:main',
         ],
     },
+
 )
