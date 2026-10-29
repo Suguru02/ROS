@@ -1,18 +1,16 @@
-name: PR05 patrol and evidence
+name: PR06 model and evidence
 
 on:
   push:
     paths:
-      - 'src/patrol/**'
-      - 'src/turtle_bringup/**'
-      - 'evidence/pr05/**'
-      - '.github/workflows/pr05.yml'
+      - 'src/course_description/**'
+      - 'evidence/pr06/**'
+      - '.github/workflows/pr06.yml'
   pull_request:
     paths:
-      - 'src/patrol/**'
-      - 'src/turtle_bringup/**'
-      - 'evidence/pr05/**'
-      - '.github/workflows/pr05.yml'
+      - 'src/course_description/**'
+      - 'evidence/pr06/**'
+      - '.github/workflows/pr06.yml'
 
 jobs:
   check:
@@ -30,23 +28,22 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends nodejs ca-certificates curl
           node --version
-          
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
-      - name: Build and test patrol
+
+      - name: Build and test course_description
         shell: bash
         run: |
           source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-select turtle_bringup patrol
+          colcon build --symlink-install --packages-select course_description
           source install/setup.bash
-          ros2 pkg prefix patrol
-          python3 -m py_compile src/patrol/patrol/control.py src/patrol/patrol/patrol.py
-          (cd src/patrol && python3 -m pytest test -q)
-          colcon test --packages-select patrol --event-handlers console_direct+
+          xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf
+          check_urdf /tmp/vehicle.urdf
+          colcon test --packages-select course_description --event-handlers console_direct+
           colcon test-result --verbose
-          
+
       - name: Download pinned course kit
         shell: bash
         run: |
@@ -54,9 +51,10 @@ jobs:
           printf '%s  %s\n' "$COURSE_KIT_SHA256" course-kit.tar.gz | sha256sum -c -
           mkdir -p .course-kit
           tar -xzf course-kit.tar.gz -C .course-kit
-          
+
       - name: Validate evidence
         shell: bash
         run: |
-          python3 -m json.tool evidence/pr05/report.json >/dev/null
-          python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
+          python3 -m json.tool evidence/pr06/report.json >/dev/null
+          python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
+EOF

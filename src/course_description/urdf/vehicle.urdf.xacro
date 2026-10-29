@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="course_ackermann">
+
+  <!-- ===== База (из SDF base_link) ===== -->
+  <xacro:property name="base_length" value="1.05"/>
+  <xacro:property name="base_width" value="0.52"/>
+  <xacro:property name="base_height" value="0.22"/>
+  <xacro:property name="base_mass" value="12.0"/>
+  <xacro:property name="body_z" value="0.12"/>
+  <xacro:property name="base_ixx" value="0.55"/>
+  <xacro:property name="base_iyy" value="1.10"/>
+  <xacro:property name="base_izz" value="1.40"/>
+
+  <!-- ===== Ходовая (из SDF plugin wheel_base/wheel_separation/wheel_radius) ===== -->
+  <xacro:property name="wheel_base" value="0.80"/>
+  <xacro:property name="track" value="0.62"/>
+  <xacro:property name="wheel_radius" value="0.12"/>
+  <xacro:property name="wheel_width" value="0.07"/>
+  <xacro:property name="wheel_mass" value="0.8"/>
+  <xacro:property name="wheel_ixx" value="0.006"/>
+  <xacro:property name="wheel_iyy" value="0.003"/>
+  <xacro:property name="wheel_izz" value="0.006"/>
+  <xacro:property name="knuckle_mass" value="0.2"/>
+  <xacro:property name="knuckle_inertia" value="0.001"/>
+
+  <xacro:property name="front_x" value="${wheel_base / 2.0}"/>
+  <xacro:property name="rear_x" value="${-wheel_base / 2.0}"/>
+  <xacro:property name="side_y" value="${track / 2.0}"/>
+
+  <!-- ===== Сенсоры (из SDF: все три в одной pose) ===== -->
+  <xacro:property name="sensor_x" value="0.28"/>
+  <xacro:property name="sensor_z" value="0.38"/>
+  <xacro:property name="sensor_mass" value="0.033333333333"/>
+  <xacro:property name="sensor_inertia" value="0.000333333333"/>
+
+  <material name="body_blue"><color rgba="0.05 0.36 0.72 1.0"/></material>
+  <material name="wheel_black"><color rgba="0.04 0.04 0.04 1.0"/></material>
+  <material name="knuckle_gray"><color rgba="0.45 0.45 0.45 1.0"/></material>
+  <material name="lidar_dark"><color rgba="0.15 0.15 0.18 1.0"/></material>
+  <material name="camera_body"><color rgba="0.10 0.10 0.12 1.0"/></material>
+  <material name="camera_lens"><color rgba="0.90 0.50 0.10 1.0"/></material>
+  <material name="imu_green"><color rgba="0.10 0.60 0.25 1.0"/></material>
+
+  <!-- ===== base_link ===== -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0.0 0.0 ${body_z}" rpy="0.0 0.0 0.0"/>
+      <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
+      <material name="body_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 ${body_z}" rpy="0.0 0.0 0.0"/>
+      <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="${base_mass}"/>
+      <inertia ixx="${base_ixx}" ixy="0.0" ixz="0.0"
+               iyy="${base_iyy}" iyz="0.0" izz="${base_izz}"/>
+    </inertial>
+  </link>
+
+  <!-- ===== Макрос колеса: цилиндр, ось вдоль Y (rpy pi/2 вокруг X, как в SDF) ===== -->
+  <xacro:macro name="wheel" params="name parent px py">
+    <link name="${name}">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 0.0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <material name="wheel_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 0.0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 0.0"/>
+        <mass value="${wheel_mass}"/>
+        <inertia ixx="${wheel_ixx}" ixy="0.0" ixz="0.0"
+                 iyy="${wheel_iyy}" iyz="0.0" izz="${wheel_izz}"/>
+      </inertial>
+    </link>
+    <joint name="${parent}_to_${name}" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+      <origin xyz="${px} ${py} 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- ===== Макрос рулевого кулачка: видимая стойка, к ней крепится переднее колесо ===== -->
+  <xacro:macro name="knuckle" params="name px py">
+    <link name="${name}">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <geometry><box size="0.04 0.04 0.16"/></geometry>
+        <material name="knuckle_gray"/>
+      </visual>
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <mass value="${knuckle_mass}"/>
+        <inertia ixx="${knuckle_inertia}" ixy="0.0" ixz="0.0"
+                 iyy="${knuckle_inertia}" iyz="0.0" izz="${knuckle_inertia}"/>
+      </inertial>
+    </link>
+    <joint name="base_to_${name}" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${px} ${py} 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Кулачки (передние) -->
+  <xacro:knuckle name="front_left_knuckle" px="${front_x}" py="${side_y}"/>
+  <xacro:knuckle name="front_right_knuckle" px="${front_x}" py="${-side_y}"/>
+
+  <!-- Колёса: передние через кулачок, задние напрямую на базу (как в SDF) -->
+  <xacro:wheel name="front_left_wheel" parent="front_left_knuckle" px="0.0" py="0.0"/>
+  <xacro:wheel name="front_right_wheel" parent="front_right_knuckle" px="0.0" py="0.0"/>
+  <xacro:wheel name="rear_left_wheel" parent="base_link" px="${rear_x}" py="${side_y}"/>
+  <xacro:wheel name="rear_right_wheel" parent="base_link" px="${rear_x}" py="${-side_y}"/>
+
+  <!-- ===== Сенсоры: frame всех трёх в 0.28 0 0.38 (как SDF), а visual разведён
+       по высоте внутри link, чтобы в RViz читались три устройства, а не один куб ===== -->
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.03" rpy="0.0 0.0 0.0"/>
+      <geometry><cylinder radius="0.05" length="0.04"/></geometry>
+      <material name="lidar_dark"/>
+    </visual>
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="${sensor_mass}"/>
+      <inertia ixx="${sensor_inertia}" ixy="0.0" ixz="0.0"
+               iyy="${sensor_inertia}" iyz="0.0" izz="${sensor_inertia}"/>
+    </inertial>
+  </link>
+  <joint name="base_to_lidar" type="fixed">
+    <parent link="base_link"/><child link="lidar_link"/>
+    <origin xyz="${sensor_x} 0.0 ${sensor_z}" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry><box size="0.05 0.10 0.05"/></geometry>
+      <material name="camera_body"/>
+    </visual>
+    <visual>
+      <origin xyz="0.028 0.0 0.0" rpy="0.0 1.5708 0.0"/>
+      <geometry><cylinder radius="0.018" length="0.006"/></geometry>
+      <material name="camera_lens"/>
+    </visual>
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="${sensor_mass}"/>
+      <inertia ixx="${sensor_inertia}" ixy="0.0" ixz="0.0"
+               iyy="${sensor_inertia}" iyz="0.0" izz="${sensor_inertia}"/>
+    </inertial>
+  </link>
+  <joint name="base_to_camera" type="fixed">
+    <parent link="base_link"/><child link="camera_link"/>
+    <origin xyz="${sensor_x} 0.0 ${sensor_z}" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0.0 0.0 -0.02" rpy="0.0 0.0 0.0"/>
+      <geometry><box size="0.03 0.03 0.01"/></geometry>
+      <material name="imu_green"/>
+    </visual>
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="${sensor_mass}"/>
+      <inertia ixx="${sensor_inertia}" ixy="0.0" ixz="0.0"
+               iyy="${sensor_inertia}" iyz="0.0" izz="${sensor_inertia}"/>
+    </inertial>
+  </link>
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/><child link="imu_link"/>
+    <origin xyz="${sensor_x} 0.0 ${sensor_z}" rpy="0.0 0.0 0.0"/>
+  </joint>
+
+</robot>
