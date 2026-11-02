@@ -19,8 +19,8 @@ jobs:
     container:
       image: osrf/ros:lyrical-desktop-full@sha256:e6b1cb530b65588279681db53784e264ce5cf83f2cc33e689d27d6024d7f3ebe
     env:
-      COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w05-bca214e3de6f.tar.gz
-      COURSE_KIT_SHA256: bca214e3de6f90f9513049dfa0f36fee65ad834da502dc3f3f8fb443517b5197
+      COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w07-XXXXXXXXXXXX.tar.gz
+      COURSE_KIT_SHA256: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     steps:
       - name: Prepare Node for checkout
         shell: bash
@@ -41,8 +41,7 @@ jobs:
           source install/setup.bash
           xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf
           check_urdf /tmp/vehicle.urdf
-          colcon test --packages-select course_description --event-handlers console_direct+
-          colcon test-result --verbose
+          (cd src/course_description && python3 -m pytest test -q)
 
       - name: Download pinned course kit
         shell: bash
@@ -57,4 +56,3 @@ jobs:
         run: |
           python3 -m json.tool evidence/pr06/report.json >/dev/null
           python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
-EOF
