@@ -1,0 +1,24 @@
+[INFO] [1793607723.855605535] [tf2_echo]: Waiting for transform base_link ->  lidar_link: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+[ros2run]: Received signal:  Terminated
+[INFO] [1793607726.533388247] [rclcpp]: signal_handler(signum=15)
+[INFO] [1793607726.536234748] [rclcpp]: signal_handler(signum=15)

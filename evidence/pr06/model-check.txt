@@ -1,0 +1,43 @@
+## xacro expand
+ok
+## check_urdf
+robot name is: course_ackermann
+---------- Successfully Parsed XML ---------------
+root Link: base_link has 7 child(ren)
+    child(1):  rear_left_wheel
+    child(2):  rear_right_wheel
+    child(3):  camera_link
+    child(4):  front_left_knuckle
+        child(1):  front_left_wheel
+    child(5):  front_right_knuckle
+        child(1):  front_right_wheel
+    child(6):  imu_link
+    child(7):  lidar_link
+## pytest (package dir)
+s.....                                                                   [100%]
+5 passed, 1 skipped in 12.22s
+## tf2_echo base_link lidar_link
+[INFO] [1793607696.693307881] [tf2_echo]: Waiting for transform base_link ->  lidar_link: Invalid frame ID "base_link" passed to canTransform argument target_frame - frame does not exist
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+At time 0.0
+- Translation: [0.280, 0.000, 0.380]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, 0.000, 1.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+- Matrix:
+  1.000  0.000  0.000  0.280
+  0.000  1.000  0.000  0.000
+  0.000  0.000  1.000  0.380
+  0.000  0.000  0.000  1.000
+[ros2run]: Received signal:  Terminated
+[INFO] [1793607699.239009561] [rclcpp]: signal_handler(signum=15)
+[INFO] [1793607699.241249016] [rclcpp]: signal_handler(signum=15)

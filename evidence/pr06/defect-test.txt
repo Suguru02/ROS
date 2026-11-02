@@ -1,0 +1,27 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________________ test_lidar_parent_is_base_link ________________________
+
+    def test_lidar_parent_is_base_link() -> None:
+        """Lidar must be attached directly to base_link."""
+        root = _load_urdf()
+    
+        joint = next(
+            j for j in root.findall('joint')
+            if j.get('name') == 'base_to_lidar'
+        )
+    
+        parent = joint.find('parent')
+        child = joint.find('child')
+        assert parent is not None
+        assert child is not None
+>       assert parent.get('link') == 'base_link'
+E       AssertionError: assert 'camera_link' == 'base_link'
+E         
+E         - base_link
+E         + camera_link
+
+src/course_description/test/test_model_parent.py:32: AssertionError
+=========================== short test summary info ============================
+FAILED src/course_description/test/test_model_parent.py::test_lidar_parent_is_base_link
+1 failed in 0.32s

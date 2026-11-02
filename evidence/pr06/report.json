@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR06",
+  "commit": "c1e6bd5f6b91eb32f3b6c92142ecade9d0a19094",
+  "course_kit": {
+    "version": "v1-w05",
+    "archive_sha256": "bca214e3de6f90f9513049dfa0f36fee65ad834da502dc3f3f8fb443517b5197"
+  },
+  "commands": [
+    "colcon build --symlink-install --packages-select course_description",
+    "xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf",
+    "check_urdf /tmp/vehicle.urdf",
+    "ros2 launch course_description display.launch.py",
+    "ros2 run tf2_ros tf2_echo base_link lidar_link",
+    "ros2 topic info /tf_static --verbose",
+    "timeout 4 ros2 topic echo /tf_static --once --qos-durability transient_local --qos-reliability reliable",
+    "timeout 4 ros2 topic echo /tf_static --once --qos-durability volatile --qos-reliability reliable",
+    "(cd src/course_description && python3 -m pytest test -q)",
+    "python3 .course-kit/v1/tools/check_practice.py PR06 --submission ."
+  ],
+  "tests": [
+    {"name": "test_lidar_parent_is_base_link", "status": "passed"},
+    {"name": "test_flake8", "status": "passed"},
+    {"name": "test_pep257", "status": "passed"},
+    {"name": "test_mypy", "status": "passed"},
+    {"name": "test_xmllint", "status": "passed"},
+    {"name": "test_copyright", "status": "skipped"}
+  ],
+  "defect": {
+    "reproducer": "В отдельном коммите parent у joint base_to_lidar изменён с base_link на camera_link при сохранении offset (0.28, 0.0, 0.38). check_urdf оставался зелёным: дерево связно и ациклично (base_link -> camera_link -> lidar_link). tf2_echo base_link lidar_link давал [0.56, 0.0, 0.76] вместо [0.28, 0.0, 0.38], тест test_lidar_parent_is_base_link падал с assert 'camera_link' == 'base_link'.",
+    "root_cause": "Ошибка семантическая, не структурная: URDF оставался корректным деревом, но преобразование base_link -> lidar_link стало композицией base_link -> camera_link и camera_link -> lidar_link, поэтому лидар оказался вдвое дальше и выше задуманного.",
+    "proof_after": "Parent возвращён на base_link финальным коммитом реализации. check_urdf зелёный, pytest зелёный, tf2_echo base_link lidar_link снова [0.28, 0.0, 0.38] и совпадает с frames.md, RViz показывает лидар на корпусе."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 3
+  },
+  "ai_used": true
+}
