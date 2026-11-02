@@ -19,8 +19,8 @@ jobs:
     container:
       image: osrf/ros:lyrical-desktop-full@sha256:e6b1cb530b65588279681db53784e264ce5cf83f2cc33e689d27d6024d7f3ebe
     env:
-      COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1.tar.gz
-      COURSE_KIT_SHA256: 9b7fdd5424d3d97e47d51dbe23064934585e62135dc2902844dd679529bda929
+      COURSE_KIT_URL: https://ros.lms.ci.nsu.ru/downloads/robotics-course-kit-v1-w09-8579e0afe96d.tar.gz
+      COURSE_KIT_SHA256: 8579e0afe96d76220735b6019cc38b1f3cac8c21e4aae8470785138a74a6c54a
     steps:
       - name: Prepare Node for checkout
         shell: bash
